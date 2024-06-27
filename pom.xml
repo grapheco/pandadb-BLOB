@@ -11,6 +11,14 @@
     <name>PandaDB BLOB Plugin</name>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>META-INF/services/**</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
@@ -36,58 +44,44 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <finalName>${project.artifactId}-${project.version}-all</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <attach>false</attach>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <!-- 处理 META-INF/services 文件 -->
+                            </transformers>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-                <version>2.8.2</version>
-            </plugin>
         </plugins>
     </build>
-    <!--mvn install:install-file -DgroupId=org.grapheco -DartifactId=plugin -Dversion=0.4.7 -Dpackaging=jar -Dfile=/Users/huchuan/Documents/GitHub/pandadb-lite/plugin/target/plugin-0.4.7.jar
-        -->
-    <!--
-    mvn install:install-file -DgroupId=org.grapheco -DartifactId=lynx -Dversion=0.66 -Dpackaging=jar -Dfile=/Users/huchuan/Documents/lynx/target/lynx-0.66.jar
-    mvn install:install-file -DgroupId=org.grapheco -DartifactId=lynx-cypherplus -Dversion=0.1-SNAPSHOT-20240531 -Dpackaging=jar -Dfile=/Users/huchuan/Documents/GitHub/lynx-cypherplus/target/lynx-cypherplus-0.1-SNAPSHOT-20240531.jar
-    -->
 
     <dependencies>
         <dependency>
             <groupId>org.grapheco</groupId>
             <artifactId>pandadb-plugin</artifactId>
             <version>0.5.0-alpha</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.grapheco</groupId>
             <artifactId>lynx</artifactId>
             <version>0.6.6</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <version>2.12.8</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
